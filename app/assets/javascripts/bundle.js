@@ -27024,7 +27024,7 @@
 	    DateUtil.changeMonth(-1);
 	  },
 	
-	  nextMonth: function () {
+	  nextMonth: function (event) {
 	    event.preventDefault();
 	    DateUtil.changeMonth(1);
 	  },
