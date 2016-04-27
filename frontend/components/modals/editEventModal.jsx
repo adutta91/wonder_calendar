@@ -50,7 +50,7 @@ var EditEventModal = React.createClass({
 
   render: function() {
     return (
-      <div>
+      <div className="modal">
         <h2>{this.state.month} {this.state.day}, {this.state.year}</h2>
         <div>
             <label htmlFor="title">Title: </label>
@@ -81,10 +81,11 @@ var EditEventModal = React.createClass({
             <br/>
             <textarea id="description"
                       value={this.state.description}
-                      onChange={this.updateDescription}>
+                      onChange={this.updateDescription}
+                      rows="10" cols="30">
             </textarea>
             <br/>
-           <button onClick={this.editEvent}>Edit</button>
+           <div className="modalSubmitButton" onClick={this.editEvent}>Edit</div>
         </div>
       </div>
     )

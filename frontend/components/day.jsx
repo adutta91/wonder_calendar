@@ -81,13 +81,13 @@ var Day = React.createClass({
         <div className="eventContainer">
           {this.getEvents()}
         </div>
-        <Modal ref="modal">
+        <Modal className="modalWindow" ref="modal">
+          <img src="app/assets/images/close.png" className="modalButton" onClick={this.hideModal}/>
           <AddEventModal
             day={this.state.day}
             month={this.state.month}
             year={this.state.year}
             modalCallback={this.hideModal}/>
-          <button className="modalButton" onClick={this.hideModal}>Close</button>
         </Modal>
       </div>
     )

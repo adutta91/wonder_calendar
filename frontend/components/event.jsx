@@ -59,7 +59,8 @@ var Event = React.createClass({
     return (
       <div className="eventModule" onClick={this.showModal}>
         {this.state.title}:  {this.state.startTime} - {this.state.endTime}
-        <Modal ref="modal">
+        <Modal className="modalWindow" ref="modal">
+          <img src="app/assets/images/close.png" className="modalButton" onClick={this.hideModal}/>
           <EditEventModal title={this.state.title}
                           description={this.state.description}
                           startTime={this.state.startTime}
@@ -69,7 +70,6 @@ var Event = React.createClass({
                           year={this.state.year}
                           id={this.state.id}
                           modalCallback={this.hideModal}/>
-          <button className="modalButton" onClick={this.hideModal}>Close</button>
         </Modal>
       </div>
     )

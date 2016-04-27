@@ -27014,14 +27014,14 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'calendar' },
-	      React.createElement('img', { src: '../assets/images/arrow_left.png', className: 'prevMonth', onClick: this.prevMonth }),
-	      this.state.month,
-	      ', ',
-	      this.state.year,
 	      React.createElement(
-	        'span',
-	        { className: 'nextMonth', onClick: this.nextMonth },
-	        'next'
+	        'div',
+	        { className: 'navigationWrapper' },
+	        React.createElement('img', { src: 'app/assets/images/arrow_left.png', className: 'prevMonth', onClick: this.prevMonth }),
+	        this.state.month,
+	        ', ',
+	        this.state.year,
+	        React.createElement('img', { src: 'app/assets/images/arrow_right.png', className: 'nextMonth', onClick: this.nextMonth })
 	      ),
 	      React.createElement(Month, { month: this.state.month, year: this.state.year })
 	    );
@@ -27205,17 +27205,13 @@
 	      ),
 	      React.createElement(
 	        Modal,
-	        { ref: 'modal' },
+	        { className: 'modalWindow', ref: 'modal' },
+	        React.createElement('img', { src: 'app/assets/images/close.png', className: 'modalButton', onClick: this.hideModal }),
 	        React.createElement(AddEventModal, {
 	          day: this.state.day,
 	          month: this.state.month,
 	          year: this.state.year,
-	          modalCallback: this.hideModal }),
-	        React.createElement(
-	          'button',
-	          { className: 'modalButton', onClick: this.hideModal },
-	          'Close'
-	        )
+	          modalCallback: this.hideModal })
 	      )
 	    );
 	  }
@@ -27887,7 +27883,7 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'modal' },
 	      React.createElement(
 	        'h2',
 	        null,
@@ -27941,11 +27937,12 @@
 	        React.createElement('br', null),
 	        React.createElement('textarea', { id: 'description',
 	          value: this.state.description,
-	          onChange: this.updateDescription }),
+	          onChange: this.updateDescription,
+	          rows: '10', cols: '30' }),
 	        React.createElement('br', null),
 	        React.createElement(
-	          'button',
-	          { onClick: this.createEvent },
+	          'div',
+	          { className: 'modalSubmitButton', onClick: this.createEvent },
 	          'Create'
 	        )
 	      )
@@ -28171,7 +28168,8 @@
 	      this.state.endTime,
 	      React.createElement(
 	        Modal,
-	        { ref: 'modal' },
+	        { className: 'modalWindow', ref: 'modal' },
+	        React.createElement('img', { src: 'app/assets/images/close.png', className: 'modalButton', onClick: this.hideModal }),
 	        React.createElement(EditEventModal, { title: this.state.title,
 	          description: this.state.description,
 	          startTime: this.state.startTime,
@@ -28180,12 +28178,7 @@
 	          month: this.state.month,
 	          year: this.state.year,
 	          id: this.state.id,
-	          modalCallback: this.hideModal }),
-	        React.createElement(
-	          'button',
-	          { className: 'modalButton', onClick: this.hideModal },
-	          'Close'
-	        )
+	          modalCallback: this.hideModal })
 	      )
 	    );
 	  }
@@ -28252,7 +28245,7 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'modal' },
 	      React.createElement(
 	        'h2',
 	        null,
@@ -28306,11 +28299,12 @@
 	        React.createElement('br', null),
 	        React.createElement('textarea', { id: 'description',
 	          value: this.state.description,
-	          onChange: this.updateDescription }),
+	          onChange: this.updateDescription,
+	          rows: '10', cols: '30' }),
 	        React.createElement('br', null),
 	        React.createElement(
-	          'button',
-	          { onClick: this.editEvent },
+	          'div',
+	          { className: 'modalSubmitButton', onClick: this.editEvent },
 	          'Edit'
 	        )
 	      )

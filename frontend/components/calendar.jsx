@@ -48,9 +48,11 @@ var Calendar = React.createClass({
   render: function() {
     return (
       <div className="calendar">
-        <img src="../assets/images/arrow_left.png" className="prevMonth" onClick={this.prevMonth}/>
-        {this.state.month}, {this.state.year}
-        <span className="nextMonth" onClick={this.nextMonth}>next</span>
+        <div className="navigationWrapper">
+          <img src="app/assets/images/arrow_left.png" className="prevMonth" onClick={this.prevMonth}/>
+          {this.state.month}, {this.state.year}
+          <img src="app/assets/images/arrow_right.png" className="nextMonth" onClick={this.nextMonth}/>
+        </div>
         <Month month={this.state.month} year={this.state.year} />
       </div>
     );

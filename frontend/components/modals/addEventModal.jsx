@@ -48,7 +48,7 @@ var AddEventModal = React.createClass({
 
   render: function() {
     return (
-      <div>
+      <div className="modal">
         <h2>{this.state.month} {this.state.day}, {this.state.year}</h2>
         <div>
             <label htmlFor="title">Title: </label>
@@ -79,10 +79,11 @@ var AddEventModal = React.createClass({
             <br/>
             <textarea id="description"
                       value={this.state.description}
-                      onChange={this.updateDescription}>
+                      onChange={this.updateDescription}
+                      rows="10" cols="30">
             </textarea>
             <br/>
-           <button onClick={this.createEvent}>Create</button>
+           <div className="modalSubmitButton" onClick={this.createEvent}>Create</div>
         </div>
       </div>
     )
