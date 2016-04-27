@@ -58,7 +58,7 @@ var Calendar = React.createClass({
       <div className="calendar">
         <div className="navigationWrapper">
           <img src="app/assets/images/arrow_left.png" className="prevMonth" onClick={this.prevMonth}/>
-          <div>{this.state.month}, {this.state.year}</div>
+          <div>{this.state.month} {this.state.year}</div>
           <img src="app/assets/images/arrow_right.png" className="nextMonth" onClick={this.nextMonth}/>
         </div>
         <div className="weekDayHeader"> {this.getWeekdays()} </div>

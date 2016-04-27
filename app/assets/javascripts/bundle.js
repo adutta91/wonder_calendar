@@ -27058,7 +27058,7 @@
 	          'div',
 	          null,
 	          this.state.month,
-	          ', ',
+	          ' ',
 	          this.state.year
 	        ),
 	        React.createElement('img', { src: 'app/assets/images/arrow_right.png', className: 'nextMonth', onClick: this.nextMonth })

@@ -42,3 +42,8 @@ so any events created will be remembered the next time you open the app.
 * provide a more reliable and easier to use form for creating an event
 * provide more view options, such as week or day view
 * enable drag'n'drop functionality of events to edit times
+* more customization
+  * multiple 'calendars', such that events can be organized into groups
+  * different colors for events
+  * repeating events
+  * share events with others via email
