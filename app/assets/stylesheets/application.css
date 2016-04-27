@@ -28,7 +28,7 @@
 }
 
 .day:hover {
-  background-color: #CECECE;
+  background-color: #EFEFEF;
   cursor: pointer;
   transition: 1s;
 }
@@ -71,4 +71,32 @@
   cursor: pointer;
   background-color: #F1F1F1;
   transition: 1s;
+}
+
+.eventModule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 100px;
+  height: 20px;
+  background-color: #BFE1FF;
+  transition: 1s;
+}
+
+.eventModule:hover {
+  cursor: pointer;
+  background-color: #7AC1FF;
+  transition: 1s;
+}
+
+.eventContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dayLabel {
+  padding: 5px;
 }

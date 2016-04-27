@@ -72,8 +72,10 @@ var Day = React.createClass({
     var date = new Date(this.state.month + " " + this.state.day + " " + this.state.year)
     return (
       <div className="day" onClick={this.showModal}>
-        {DAYS[date.getDay()]} {this.state.day}
-        {this.getEvents()}
+        <div className="dayLabel">{this.state.day}</div>
+        <div className="eventContainer">
+          {this.getEvents()}
+        </div>
         <Modal ref="modal">
           <AddEventModal
             day={this.state.day}

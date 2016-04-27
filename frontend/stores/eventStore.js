@@ -3,7 +3,15 @@ var Dispatcher = require('../dispatcher/dispatcher');
 
 var EventStore = new Store(Dispatcher);
 
-var _events = {};
+var getStoredEvents = function() {
+  if (localStorage['wonderCalendarEvents']) {
+    return JSON.parse(localStorage['wonderCalendarEvents']);
+  } else {
+    return {};
+  }
+};
+
+var _events = getStoredEvents();
 
 EventStore.getEvents = function(date) {
   return _events[date];
@@ -43,5 +51,6 @@ var conflictsWith = function(evnt1, evnt2) {
     return false;
   }
 };
+
 
 module.exports = EventStore;

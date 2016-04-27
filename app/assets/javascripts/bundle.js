@@ -27188,10 +27188,16 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'day', onClick: this.showModal },
-	      DAYS[date.getDay()],
-	      ' ',
-	      this.state.day,
-	      this.getEvents(),
+	      React.createElement(
+	        'div',
+	        { className: 'dayLabel' },
+	        this.state.day
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'eventContainer' },
+	        this.getEvents()
+	      ),
 	      React.createElement(
 	        Modal,
 	        { ref: 'modal' },
@@ -27988,7 +27994,15 @@
 	
 	var EventStore = new Store(Dispatcher);
 	
-	var _events = {};
+	var getStoredEvents = function () {
+	  if (localStorage['wonderCalendarEvents']) {
+	    return JSON.parse(localStorage['wonderCalendarEvents']);
+	  } else {
+	    return {};
+	  }
+	};
+	
+	var _events = getStoredEvents();
 	
 	EventStore.getEvents = function (date) {
 	  return _events[date];
@@ -28037,6 +28051,10 @@
 
 	var React = __webpack_require__(1);
 	
+	// MODAL
+	var Modal = __webpack_require__(204);
+	var EditEventModal = __webpack_require__(214);
+	
 	var Event = React.createClass({
 	  displayName: 'Event',
 	
@@ -28050,20 +28068,59 @@
 	    };
 	  },
 	
+	  showModal: function (event) {
+	    event.stopPropagation();
+	    this.refs.modal.show();
+	  },
+	
+	  hideModal: function () {
+	    this.refs.modal.hide();
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'eventModule', onClick: this.showModal },
 	      this.state.title,
-	      ' ',
+	      ':  ',
 	      this.state.startTime,
 	      ' - ',
-	      this.state.endTime
+	      this.state.endTime,
+	      React.createElement(
+	        Modal,
+	        { ref: 'modal' },
+	        React.createElement(EditEventModal, null),
+	        React.createElement(
+	          'button',
+	          { className: 'modalButton', onClick: this.hideModal },
+	          'Close'
+	        )
+	      )
 	    );
 	  }
 	});
 	
 	module.exports = Event;
+
+/***/ },
+/* 214 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var EditEventModal = React.createClass({
+	  displayName: 'EditEventModal',
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      'I am an edit event modal'
+	    );
+	  }
+	});
+	
+	module.exports = EditEventModal;
 
 /***/ }
 /******/ ]);
