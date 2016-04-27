@@ -27118,6 +27118,10 @@
 	
 	// STORES
 	var DateStore = __webpack_require__(172);
+	var EventStore = __webpack_require__(212);
+	
+	// COMPONENTS
+	var Event = __webpack_require__(213);
 	
 	// MODAL
 	var Modal = __webpack_require__(204);
@@ -27129,6 +27133,7 @@
 	
 	  getInitialState: function () {
 	    return {
+	      events: EventStore.getEvents(this.props.month + " " + this.props.day + " " + this.props.year),
 	      day: this.props.day,
 	      month: this.props.month,
 	      year: this.props.year
@@ -27137,10 +27142,12 @@
 	
 	  componentDidMount: function () {
 	    this.dateListener = DateStore.addListener(this.updateDate);
+	    this.eventListener = EventStore.addListener(this.updateEvents);
 	  },
 	
 	  componentWillUnmount: function () {
 	    this.dateListener.remove();
+	    this.eventListener.remove();
 	  },
 	
 	  updateDate: function () {
@@ -27148,6 +27155,24 @@
 	      month: DateStore.viewedMonth(),
 	      year: DateStore.viewedYear()
 	    });
+	  },
+	
+	  updateEvents: function () {
+	    this.setState({ events: EventStore.getEvents(this.state.month + " " + this.state.day + " " + this.state.year) });
+	  },
+	
+	  getEvents: function () {
+	    if (this.state.events) {
+	      return this.state.events.map(function (evnt, idx) {
+	        return React.createElement(Event, { title: evnt.title,
+	          description: evnt.description,
+	          startTime: evnt.startTime,
+	          endTime: evnt.endTime,
+	          key: idx });
+	      });
+	    } else {
+	      return React.createElement('div', null);
+	    }
 	  },
 	
 	  showModal: function () {
@@ -27166,10 +27191,15 @@
 	      DAYS[date.getDay()],
 	      ' ',
 	      this.state.day,
+	      this.getEvents(),
 	      React.createElement(
 	        Modal,
 	        { ref: 'modal' },
-	        React.createElement(AddEventModal, { day: this.state.day, month: this.state.month, year: this.state.year }),
+	        React.createElement(AddEventModal, {
+	          day: this.state.day,
+	          month: this.state.month,
+	          year: this.state.year,
+	          modalCallback: this.hideModal }),
 	        React.createElement(
 	          'button',
 	          { className: 'modalButton', onClick: this.hideModal },
@@ -27796,7 +27826,7 @@
 	var React = __webpack_require__(1);
 	
 	// UTIL
-	var EventUtil = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../util/eventUtil\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var EventUtil = __webpack_require__(210);
 	
 	var AddEventModal = React.createClass({
 	  displayName: 'AddEventModal',
@@ -27834,10 +27864,13 @@
 	    EventUtil.addEvent({
 	      title: this.state.title,
 	      description: this.state.description,
+	      startTime: parseInt(this.state.startTime),
+	      endTime: parseInt(this.state.endTime),
 	      day: this.state.day,
 	      month: this.state.month,
 	      year: this.state.year
 	    });
+	    this.props.modalCallback();
 	  },
 	
 	  render: function () {
@@ -27910,6 +27943,127 @@
 	});
 	
 	module.exports = AddEventModal;
+
+/***/ },
+/* 206 */,
+/* 207 */,
+/* 208 */,
+/* 209 */,
+/* 210 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var EventActions = __webpack_require__(211);
+	
+	var EventUtil = {
+	  addEvent: function (evnt) {
+	    EventActions.addEvent(evnt);
+	  }
+	};
+	
+	module.exports = EventUtil;
+
+/***/ },
+/* 211 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(168);
+	
+	var EventActions = {
+	  addEvent: function (evnt) {
+	    Dispatcher.dispatch({
+	      actionType: "ADD_EVENT",
+	      evnt: evnt
+	    });
+	  }
+	};
+	
+	module.exports = EventActions;
+
+/***/ },
+/* 212 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(173).Store;
+	var Dispatcher = __webpack_require__(168);
+	
+	var EventStore = new Store(Dispatcher);
+	
+	var _events = {};
+	
+	EventStore.getEvents = function (date) {
+	  return _events[date];
+	};
+	
+	EventStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "ADD_EVENT":
+	      addEvent(payload.evnt);
+	      EventStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	var addEvent = function (evnt) {
+	  var date = evnt.month + " " + evnt.day + " " + evnt.year;
+	  var eventInfo = {
+	    title: evnt.title,
+	    description: evnt.description,
+	    startTime: evnt.startTime,
+	    endTime: evnt.endTime
+	  };
+	  if (_events[date]) {
+	    _events[date].push(eventInfo);
+	  } else {
+	    _events[date] = [eventInfo];
+	  }
+	  localStorage['wonderCalendarEvents'] = JSON.stringify(_events);
+	};
+	
+	var conflictsWith = function (evnt1, evnt2) {
+	  if (evnt1.startTime < evnt2.endTime && evnt1.startTime > evnt2.startTime) {
+	    return true;
+	  } else if (evnt1.endTime > evnt2.startTime && evnt1.endTime < evnt2.endTime) {
+	    return true;
+	  } else {
+	    return false;
+	  }
+	};
+	
+	module.exports = EventStore;
+
+/***/ },
+/* 213 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var Event = React.createClass({
+	  displayName: 'Event',
+	
+	
+	  getInitialState: function () {
+	    return {
+	      title: this.props.title,
+	      description: this.props.description,
+	      startTime: this.props.startTime,
+	      endTime: this.props.endTime
+	    };
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      this.state.title,
+	      ' ',
+	      this.state.startTime,
+	      ' - ',
+	      this.state.endTime
+	    );
+	  }
+	});
+	
+	module.exports = Event;
 
 /***/ }
 /******/ ]);

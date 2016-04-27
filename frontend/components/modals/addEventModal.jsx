@@ -1,7 +1,7 @@
 var React = require('react');
 
 // UTIL
-var EventUtil = require('../util/eventUtil');
+var EventUtil = require('../../util/eventUtil');
 
 var AddEventModal = React.createClass({
 
@@ -37,10 +37,13 @@ var AddEventModal = React.createClass({
     EventUtil.addEvent({
       title: this.state.title,
       description: this.state.description,
+      startTime: parseInt(this.state.startTime),
+      endTime: parseInt(this.state.endTime),
       day: this.state.day,
       month: this.state.month,
       year: this.state.year
     });
+    this.props.modalCallback();
   },
 
   render: function() {

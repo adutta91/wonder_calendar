@@ -4,7 +4,7 @@ var EventActions = {
   addEvent: function(evnt) {
     Dispatcher.dispatch({
       actionType: "ADD_EVENT",
-      payload: evnt
+      evnt: evnt
     });
   }
 };
