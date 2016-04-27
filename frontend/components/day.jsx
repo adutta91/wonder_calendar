@@ -6,6 +6,10 @@ var DAYS = require('../assets/days');
 // STORES
 var DateStore = require('../stores/dateStore');
 
+// MODAL
+var Modal = require('boron/OutlineModal');
+var AddEventModal = require('./modals/addEventModal');
+
 var Day = React.createClass({
 
   getInitialState: function() {
@@ -31,11 +35,23 @@ var Day = React.createClass({
     });
   },
 
+  showModal: function(){
+    this.refs.modal.show();
+  },
+
+  hideModal: function(){
+    this.refs.modal.hide();
+  },
+
   render: function() {
     var date = new Date(this.state.month + " " + this.state.day + " " + this.state.year)
     return (
-      <div className="day">
+      <div className="day" onClick={this.showModal}>
         {DAYS[date.getDay()]} {this.state.day}
+        <Modal ref="modal">
+          <AddEventModal day={this.state.day} month={this.state.month} year={this.state.year}/>
+          <button className="modalButton" onClick={this.hideModal}>Close</button>
+        </Modal>
       </div>
     )
   }

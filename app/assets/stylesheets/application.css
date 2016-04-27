@@ -12,12 +12,18 @@
  *
  *= require_tree .
  *= require_self
+ transition: 1s;
  */
+
+ .calendar {
+   position: fixed;
+   top: 50px;
+ }
 
 .day {
   border: 1px solid black;
-  width: 100px;
-  height: 80px;
+  width: 160px;
+  height: 120px;
   transition: 1s;
 }
 
@@ -29,13 +35,40 @@
 
 .bufferDay {
   border: 1px solid gray;
-  width: 100px;
-  height: 80px;
+  width: 160px;
+  height: 120px;
   background-color: #F1F1F1;
 }
 
 .month {
   display: flex;
   flex-wrap: wrap;
-  width: 750px;
+  width: 1140px;
+  margin: 15px;
+}
+
+.nextMonth {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid black;
+  transition: 1s;
+}
+
+.nextMonth:hover {
+  cursor: pointer;
+  background-color: #F1F1F1;
+  transition: 1s;
+}
+
+.prevMonth {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid black;
+  transition: 1s;
+}
+
+.prevMonth:hover {
+  cursor: pointer;
+  background-color: #F1F1F1;
+  transition: 1s;
 }
