@@ -8,7 +8,10 @@ var DateUtil = require('./util/dateUtil');
 // STORES
 var DateStore = require('./stores/dateStore');
 
-var CalendarApp = React.createClass({
+// COMPONENTS
+var Calendar = require('./components/calendar');
+
+var WonderApp = React.createClass({
 
   getInitialState: function() {
     return ({
@@ -30,8 +33,9 @@ var CalendarApp = React.createClass({
 
   render: function() {
     return (
-      <div>
+      <div className="app">
         {this.state.date}
+        <Calendar />
       </div>
     )
   }
@@ -39,5 +43,5 @@ var CalendarApp = React.createClass({
 
 document.addEventListener("DOMContentLoaded", function() {
   var root = document.querySelector("#root");
-  ReactDOM.render(<CalendarApp />, root);
+  ReactDOM.render(<WonderApp />, root);
 });

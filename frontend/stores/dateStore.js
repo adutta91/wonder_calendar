@@ -14,11 +14,22 @@ var _date = new Date(Date.now()).getDate();
 var _hour = new Date(Date.now()).getHours();
 var _minute = new Date(Date.now()).getMinutes();
 
+var _viewedMonth = _month;
+var _viewedYear = _year;
+
 
 DateStore.currentDate = function() {
   return (
     DAYS[_day] + " " + MONTHS[_month] + " " + _date + ", " + _year
   )
+};
+
+DateStore.viewedMonth = function() {
+  return MONTHS[_viewedMonth];
+};
+
+DateStore.viewedYear = function() {
+  return _viewedYear;
 };
 
 DateStore.__onDispatch = function(payload) {
