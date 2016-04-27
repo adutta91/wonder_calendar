@@ -59,7 +59,7 @@ var AddEventModal = React.createClass({
                    onChange={this.updateTitle}/>
             <br/>
 
-            <label htmlFor="startTime">Start: </label>
+            <label htmlFor="startTime">Start (0 - 23): </label>
             <br/>
             <input type="text"
                    id="startTime"
@@ -67,7 +67,7 @@ var AddEventModal = React.createClass({
                    onChange={this.updateStartTime}/>
             <br/>
 
-            <label htmlFor="endTime">End: </label>
+            <label htmlFor="endTime">End (0 - 23): </label>
             <br/>
             <input type="text"
                    id="endTime"

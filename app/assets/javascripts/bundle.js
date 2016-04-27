@@ -27963,7 +27963,7 @@
 	        React.createElement(
 	          'label',
 	          { htmlFor: 'startTime' },
-	          'Start: '
+	          'Start (0 - 23): '
 	        ),
 	        React.createElement('br', null),
 	        React.createElement('input', { type: 'text',
@@ -27974,7 +27974,7 @@
 	        React.createElement(
 	          'label',
 	          { htmlFor: 'endTime' },
-	          'End: '
+	          'End (0 - 23): '
 	        ),
 	        React.createElement('br', null),
 	        React.createElement('input', { type: 'text',
@@ -28128,6 +28128,10 @@
 	    endTime: evnt.endTime,
 	    id: _events[date] ? _events[date].length : 0
 	  };
+	  if (!validEvent(date, eventInfo)) {
+	    alert("invalid event parameters");
+	    return;
+	  }
 	  if (_events[date]) {
 	    _events[date].push(eventInfo);
 	  } else {
@@ -28165,6 +28169,14 @@
 	  });
 	  _events[date] = newDateEvents;
 	  localStorage['wonderCalendarEvents'] = JSON.stringify(_events);
+	};
+	
+	var validEvent = function (date, info) {
+	  if (info.startTime > info.endTime) {
+	    return false;
+	  } else {
+	    return true;
+	  }
 	};
 	
 	// vestigial -- decided not to use so users could create overlapping events if

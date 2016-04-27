@@ -59,6 +59,10 @@ var addEvent = function(evnt) {
     endTime: evnt.endTime,
     id: _events[date] ? _events[date].length : 0
   };
+  if (!validEvent(date, eventInfo)) {
+    alert("invalid event parameters");
+    return;
+  }
   if (_events[date]) {
     _events[date].push(eventInfo)
   } else {
@@ -96,6 +100,14 @@ var deleteEvent = function(date, id) {
   });
   _events[date] = newDateEvents;
   localStorage['wonderCalendarEvents'] = JSON.stringify(_events);
+};
+
+var validEvent = function(date, info) {
+  if (info.startTime > info.endTime) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
 
