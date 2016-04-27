@@ -43,6 +43,10 @@ EventStore.__onDispatch = function(payload) {
       editEvent(payload.evnt);
       EventStore.__emitChange();
       break;
+    case "DELETE_EVENT":
+      deleteEvent(payload.date, payload.id);
+      EventStore.__emitChange();
+      break;
   }
 };
 
@@ -80,9 +84,23 @@ var editEvent = function(evnt) {
       return event;
     }
   });
-
+  localStorage['wonderCalendarEvents'] = JSON.stringify(_events);
 };
 
+var deleteEvent = function(date, id) {
+  var newDateEvents = [];
+  _events[date].forEach(function(evnt) {
+    if (evnt.id !== id) {
+      newDateEvents.push(evnt);
+    }
+  });
+  _events[date] = newDateEvents;
+  localStorage['wonderCalendarEvents'] = JSON.stringify(_events);
+};
+
+
+// vestigial -- decided not to use so users could create overlapping events if
+//              desired
 var conflictsWith = function(evnt1, evnt2) {
   if (evnt1.startTime < evnt2.endTime && evnt1.startTime > evnt2.startTime) {
     return true;

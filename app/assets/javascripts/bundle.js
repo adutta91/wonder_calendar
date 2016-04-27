@@ -28022,6 +28022,10 @@
 	
 	  editEvent: function (evnt) {
 	    EventActions.editEvent(evnt);
+	  },
+	
+	  deleteEvent: function (date, id) {
+	    EventActions.deleteEvent(date, id);
 	  }
 	};
 	
@@ -28045,6 +28049,14 @@
 	    Dispatcher.dispatch({
 	      actionType: "EDIT_EVENT",
 	      evnt: evnt
+	    });
+	  },
+	
+	  deleteEvent: function (date, id) {
+	    Dispatcher.dispatch({
+	      actionType: "DELETE_EVENT",
+	      id: id,
+	      date: date
 	    });
 	  }
 	};
@@ -28100,6 +28112,10 @@
 	      editEvent(payload.evnt);
 	      EventStore.__emitChange();
 	      break;
+	    case "DELETE_EVENT":
+	      deleteEvent(payload.date, payload.id);
+	      EventStore.__emitChange();
+	      break;
 	  }
 	};
 	
@@ -28137,8 +28153,22 @@
 	      return event;
 	    }
 	  });
+	  localStorage['wonderCalendarEvents'] = JSON.stringify(_events);
 	};
 	
+	var deleteEvent = function (date, id) {
+	  var newDateEvents = [];
+	  _events[date].forEach(function (evnt) {
+	    if (evnt.id !== id) {
+	      newDateEvents.push(evnt);
+	    }
+	  });
+	  _events[date] = newDateEvents;
+	  localStorage['wonderCalendarEvents'] = JSON.stringify(_events);
+	};
+	
+	// vestigial -- decided not to use so users could create overlapping events if
+	//              desired
 	var conflictsWith = function (evnt1, evnt2) {
 	  if (evnt1.startTime < evnt2.endTime && evnt1.startTime > evnt2.startTime) {
 	    return true;
@@ -28299,6 +28329,12 @@
 	    this.props.modalCallback();
 	  },
 	
+	  deleteEvent: function (event) {
+	    var date = this.state.month + " " + this.state.day + " " + this.state.year;
+	    EventUtil.deleteEvent(date, this.state.id);
+	    this.props.modalCallback();
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'div',
@@ -28363,6 +28399,11 @@
 	          'div',
 	          { className: 'modalSubmitButton', onClick: this.editEvent },
 	          'Edit'
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'modalSubmitButton', onClick: this.deleteEvent },
+	          'Delete'
 	        )
 	      )
 	    );

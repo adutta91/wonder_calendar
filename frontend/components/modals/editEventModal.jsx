@@ -48,6 +48,12 @@ var EditEventModal = React.createClass({
     this.props.modalCallback();
   },
 
+  deleteEvent: function(event) {
+    var date = this.state.month + " " + this.state.day  + " " + this.state.year
+    EventUtil.deleteEvent(date, this.state.id);
+    this.props.modalCallback();
+  },
+
   render: function() {
     return (
       <div className="modal">
@@ -86,6 +92,7 @@ var EditEventModal = React.createClass({
             </textarea>
             <br/>
            <div className="modalSubmitButton" onClick={this.editEvent}>Edit</div>
+           <div className="modalSubmitButton" onClick={this.deleteEvent}>Delete</div>
         </div>
       </div>
     )

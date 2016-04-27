@@ -7,6 +7,10 @@ var EventUtil = {
 
   editEvent: function(evnt) {
     EventActions.editEvent(evnt);
+  },
+
+  deleteEvent: function(date, id) {
+    EventActions.deleteEvent(date, id)
   }
 };
 

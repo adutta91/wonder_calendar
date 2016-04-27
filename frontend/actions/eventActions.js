@@ -13,6 +13,14 @@ var EventActions = {
       actionType: "EDIT_EVENT",
       evnt: evnt
     });
+  },
+
+  deleteEvent: function(date, id) {
+    Dispatcher.dispatch({
+      actionType: "DELETE_EVENT",
+      id: id,
+      date: date
+    });
   }
 };
 
