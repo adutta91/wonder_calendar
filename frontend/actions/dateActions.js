@@ -13,6 +13,12 @@ var DateActions = {
       actionType: "SET_VIEW",
       delta: delta
     });
+  },
+
+  resetViewedMonth: function(month) {
+    Dispatcher.dispatch({
+      actionType: "RESET_VIEW"
+    });
   }
 };
 

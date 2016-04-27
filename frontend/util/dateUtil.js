@@ -7,6 +7,10 @@ var DateUtil = {
 
   changeMonth: function(delta) {
     DateActions.changeViewedMonth(delta);
+  },
+
+  resetDate: function() {
+    DateActions.resetViewedMonth();
   }
 
 };

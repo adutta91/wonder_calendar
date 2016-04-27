@@ -36,9 +36,12 @@ var Day = React.createClass({
   },
 
   updateDate: function() {
+    var newMonth = DateStore.viewedMonth();
+    var newYear = DateStore.viewedYear();
     this.setState({
-      month: DateStore.viewedMonth(),
-      year: DateStore.viewedYear()
+      month: newMonth,
+      year: newYear,
+      events: EventStore.getEvents(newMonth + " " + this.state.day + " " + newYear)
     });
   },
 

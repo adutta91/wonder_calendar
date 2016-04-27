@@ -13,13 +13,17 @@ var getStoredEvents = function() {
 
 var _events = getStoredEvents();
 
+EventStore.allEvents = function() {
+  return _events;
+};
+
 EventStore.getEvents = function(date) {
   return _events[date];
 };
 
 EventStore.getEventById = function(date, id) {
   var event = {};
-  if (_events[date]) {    
+  if (_events[date]) {
     _events[date].forEach(function(evnt) {
       if (evnt.id === id) {
         event = evnt;

@@ -5,6 +5,7 @@ var Day = require('./day');
 
 // STORES
 var DateStore = require('../stores/dateStore');
+var EventStore = require('../stores/eventStore');
 
 // ASSETS
 var MONTHS = require('../assets/months');
@@ -20,10 +21,12 @@ var Month = React.createClass({
 
   componentDidMount: function() {
     this.dateListener = DateStore.addListener(this.updateView);
+    this.eventListener = DateStore.addListener(this.updateView);
   },
 
   componentWillUnmount: function() {
     this.dateListener.remove();
+    this.eventListener.remove();
   },
 
   updateView: function() {

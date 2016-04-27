@@ -39,13 +39,17 @@ DateStore.__onDispatch = function(payload) {
       DateStore.__emitChange();
       break;
     case "SET_VIEW":
-      resetViewed(payload.delta);
+      setViewed(payload.delta);
+      DateStore.__emitChange();
+      break;
+    case "RESET_VIEW":
+      resetViewed(payload.month);
       DateStore.__emitChange();
       break;
   }
 };
 
-var resetViewed = function(delta) {
+var setViewed = function(delta) {
   _viewedMonth += delta;
   if (_viewedMonth > 11) {
     _viewedMonth = 0;
@@ -54,6 +58,10 @@ var resetViewed = function(delta) {
     _viewedMonth = 11;
     _viewedYear -= 1;
   }
+};
+
+var resetViewed = function(month) {
+  _viewedMonth = new Date(Date.now()).getMonth();
 };
 
 var resetDate = function(date) {

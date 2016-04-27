@@ -53,6 +53,7 @@
 	
 	// STORES
 	var DateStore = __webpack_require__(172);
+	var EventStore = __webpack_require__(212);
 	
 	// COMPONENTS
 	var Calendar = __webpack_require__(192);
@@ -79,13 +80,17 @@
 	    this.setState({ date: DateStore.currentDate() });
 	  },
 	
+	  resetDate: function () {
+	    DateUtil.resetDate();
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'div',
 	      { className: 'app' },
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'currentDate', onClick: this.resetDate },
 	        this.state.date
 	      ),
 	      React.createElement(Calendar, null)
@@ -94,6 +99,7 @@
 	});
 	
 	document.addEventListener("DOMContentLoaded", function () {
+	  window.EventStore = EventStore;
 	  var root = document.querySelector("#root");
 	  ReactDOM.render(React.createElement(WonderApp, null), root);
 	});
@@ -20066,6 +20072,10 @@
 	
 	  changeMonth: function (delta) {
 	    DateActions.changeViewedMonth(delta);
+	  },
+	
+	  resetDate: function () {
+	    DateActions.resetViewedMonth();
 	  }
 	
 	};
@@ -20090,6 +20100,12 @@
 	    Dispatcher.dispatch({
 	      actionType: "SET_VIEW",
 	      delta: delta
+	    });
+	  },
+	
+	  resetViewedMonth: function (month) {
+	    Dispatcher.dispatch({
+	      actionType: "RESET_VIEW"
 	    });
 	  }
 	};
@@ -20453,13 +20469,17 @@
 	      DateStore.__emitChange();
 	      break;
 	    case "SET_VIEW":
-	      resetViewed(payload.delta);
+	      setViewed(payload.delta);
+	      DateStore.__emitChange();
+	      break;
+	    case "RESET_VIEW":
+	      resetViewed(payload.month);
 	      DateStore.__emitChange();
 	      break;
 	  }
 	};
 	
-	var resetViewed = function (delta) {
+	var setViewed = function (delta) {
 	  _viewedMonth += delta;
 	  if (_viewedMonth > 11) {
 	    _viewedMonth = 0;
@@ -20468,6 +20488,10 @@
 	    _viewedMonth = 11;
 	    _viewedYear -= 1;
 	  }
+	};
+	
+	var resetViewed = function (month) {
+	  _viewedMonth = new Date(Date.now()).getMonth();
 	};
 	
 	var resetDate = function (date) {
@@ -27018,9 +27042,13 @@
 	        'div',
 	        { className: 'navigationWrapper' },
 	        React.createElement('img', { src: 'app/assets/images/arrow_left.png', className: 'prevMonth', onClick: this.prevMonth }),
-	        this.state.month,
-	        ', ',
-	        this.state.year,
+	        React.createElement(
+	          'div',
+	          null,
+	          this.state.month,
+	          ', ',
+	          this.state.year
+	        ),
 	        React.createElement('img', { src: 'app/assets/images/arrow_right.png', className: 'nextMonth', onClick: this.nextMonth })
 	      ),
 	      React.createElement(Month, { month: this.state.month, year: this.state.year })
@@ -27042,6 +27070,7 @@
 	
 	// STORES
 	var DateStore = __webpack_require__(172);
+	var EventStore = __webpack_require__(212);
 	
 	// ASSETS
 	var MONTHS = __webpack_require__(191);
@@ -27059,10 +27088,12 @@
 	
 	  componentDidMount: function () {
 	    this.dateListener = DateStore.addListener(this.updateView);
+	    this.eventListener = DateStore.addListener(this.updateView);
 	  },
 	
 	  componentWillUnmount: function () {
 	    this.dateListener.remove();
+	    this.eventListener.remove();
 	  },
 	
 	  updateView: function () {
@@ -27151,9 +27182,12 @@
 	  },
 	
 	  updateDate: function () {
+	    var newMonth = DateStore.viewedMonth();
+	    var newYear = DateStore.viewedYear();
 	    this.setState({
-	      month: DateStore.viewedMonth(),
-	      year: DateStore.viewedYear()
+	      month: newMonth,
+	      year: newYear,
+	      events: EventStore.getEvents(newMonth + " " + this.state.day + " " + newYear)
 	    });
 	  },
 	
@@ -28017,6 +28051,10 @@
 	
 	var _events = getStoredEvents();
 	
+	EventStore.allEvents = function () {
+	  return _events;
+	};
+	
 	EventStore.getEvents = function (date) {
 	  return _events[date];
 	};
@@ -28161,11 +28199,17 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'eventModule', onClick: this.showModal },
-	      this.state.title,
-	      ':  ',
-	      this.state.startTime,
-	      ' - ',
-	      this.state.endTime,
+	      React.createElement(
+	        'div',
+	        { className: 'eventModuleInfo' },
+	        ' ',
+	        this.state.title,
+	        ':  ',
+	        this.state.startTime,
+	        ' - ',
+	        this.state.endTime,
+	        ' '
+	      ),
 	      React.createElement(
 	        Modal,
 	        { className: 'modalWindow', ref: 'modal' },
