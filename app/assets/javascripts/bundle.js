@@ -26996,7 +26996,9 @@
 	// COMPONENTS
 	var Month = __webpack_require__(193);
 	
+	// ASSETS
 	var MONTHS = __webpack_require__(191);
+	var DAYS = __webpack_require__(190);
 	
 	var Calendar = React.createClass({
 	  displayName: 'Calendar',
@@ -27034,6 +27036,16 @@
 	    });
 	  },
 	
+	  getWeekdays: function () {
+	    return Object.keys(DAYS).map(function (dayNum) {
+	      return React.createElement(
+	        'div',
+	        { key: dayNum },
+	        DAYS[dayNum]
+	      );
+	    });
+	  },
+	
 	  render: function () {
 	    return React.createElement(
 	      'div',
@@ -27050,6 +27062,13 @@
 	          this.state.year
 	        ),
 	        React.createElement('img', { src: 'app/assets/images/arrow_right.png', className: 'nextMonth', onClick: this.nextMonth })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'weekDayHeader' },
+	        ' ',
+	        this.getWeekdays(),
+	        ' '
 	      ),
 	      React.createElement(Month, { month: this.state.month, year: this.state.year })
 	    );
@@ -28202,13 +28221,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'eventModuleInfo' },
-	        ' ',
-	        this.state.title,
-	        ':  ',
-	        this.state.startTime,
-	        ' - ',
-	        this.state.endTime,
-	        ' '
+	        this.state.title
 	      ),
 	      React.createElement(
 	        Modal,

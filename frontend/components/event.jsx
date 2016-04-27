@@ -58,7 +58,7 @@ var Event = React.createClass({
 
     return (
       <div className="eventModule" onClick={this.showModal}>
-        <div className="eventModuleInfo"> {this.state.title}:  {this.state.startTime} - {this.state.endTime} </div>
+        <div className="eventModuleInfo">{this.state.title}</div>
         <Modal className="modalWindow" ref="modal">
           <img src="app/assets/images/close.png" className="modalButton" onClick={this.hideModal}/>
           <EditEventModal title={this.state.title}

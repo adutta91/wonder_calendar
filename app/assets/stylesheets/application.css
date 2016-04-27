@@ -50,6 +50,13 @@
   justify-content: center;
  }
 
+ .weekDayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 1145px;
+ }
+
 .day {
   border: 1px solid black;
   width: 160px;
@@ -113,14 +120,13 @@
 }
 
 .eventModule {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border: 1px solid black;
   border-radius: 5px;
-  margin: 2px;
+  margin: 2px auto;
+  text-align: center;
   width: 100px;
   height: 20px;
+  padding: 2px 10px;
   background-color: #BFE1FF;
   transition: 1s;
 }
@@ -138,10 +144,10 @@
 }
 
 .eventContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  height: 80px;
+  width: 160px;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 .dayLabel {

@@ -9,7 +9,9 @@ var DateUtil = require('../util/dateUtil');
 // COMPONENTS
 var Month = require('./month');
 
+// ASSETS
 var MONTHS = require('../assets/months');
+var DAYS = require('../assets/days');
 
 var Calendar = React.createClass({
 
@@ -45,6 +47,12 @@ var Calendar = React.createClass({
     });
   },
 
+  getWeekdays: function() {
+    return Object.keys(DAYS).map(function(dayNum) {
+      return (<div key={dayNum}>{DAYS[dayNum]}</div>)
+    });
+  },
+
   render: function() {
     return (
       <div className="calendar">
@@ -53,6 +61,7 @@ var Calendar = React.createClass({
           <div>{this.state.month}, {this.state.year}</div>
           <img src="app/assets/images/arrow_right.png" className="nextMonth" onClick={this.nextMonth}/>
         </div>
+        <div className="weekDayHeader"> {this.getWeekdays()} </div>
         <Month month={this.state.month} year={this.state.year} />
       </div>
     );
