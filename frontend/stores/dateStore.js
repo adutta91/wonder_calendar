@@ -38,6 +38,21 @@ DateStore.__onDispatch = function(payload) {
       resetDate(payload.date);
       DateStore.__emitChange();
       break;
+    case "SET_VIEW":
+      resetViewed(payload.delta);
+      DateStore.__emitChange();
+      break;
+  }
+};
+
+var resetViewed = function(delta) {
+  _viewedMonth += delta;
+  if (_viewedMonth > 11) {
+    _viewedMonth = 0;
+    _viewedYear += 1;
+  } else if (_viewedMonth < 0) {
+    _viewedMonth = 11;
+    _viewedYear -= 1;
   }
 };
 

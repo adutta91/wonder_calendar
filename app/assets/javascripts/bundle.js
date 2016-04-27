@@ -20058,7 +20058,12 @@
 	var DateUtil = {
 	  setDate: function () {
 	    DateActions.setDate(Date.now());
+	  },
+	
+	  changeMonth: function (delta) {
+	    DateActions.changeViewedMonth(delta);
 	  }
+	
 	};
 	
 	module.exports = DateUtil;
@@ -20074,6 +20079,13 @@
 	    Dispatcher.dispatch({
 	      actionType: "SET_DATE",
 	      date: date
+	    });
+	  },
+	
+	  changeViewedMonth: function (delta) {
+	    Dispatcher.dispatch({
+	      actionType: "SET_VIEW",
+	      delta: delta
 	    });
 	  }
 	};
@@ -20436,6 +20448,21 @@
 	      resetDate(payload.date);
 	      DateStore.__emitChange();
 	      break;
+	    case "SET_VIEW":
+	      resetViewed(payload.delta);
+	      DateStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	var resetViewed = function (delta) {
+	  _viewedMonth += delta;
+	  if (_viewedMonth > 11) {
+	    _viewedMonth = 0;
+	    _viewedYear += 1;
+	  } else if (_viewedMonth < 0) {
+	    _viewedMonth = 11;
+	    _viewedYear -= 1;
 	  }
 	};
 	
@@ -26898,13 +26925,13 @@
 /***/ function(module, exports) {
 
 	module.exports = {
-	  0: "Sunday",
-	  1: "Monday",
-	  2: "Tuesday",
-	  3: "Wednesday",
-	  4: "Thursday",
-	  5: "Friday",
-	  6: "Saturday"
+	  0: "Sun",
+	  1: "Mon",
+	  2: "Tue",
+	  3: "Wed",
+	  4: "Thu",
+	  5: "Fri",
+	  6: "Sat"
 	};
 
 /***/ },
@@ -26935,6 +26962,9 @@
 	// STORES
 	var DateStore = __webpack_require__(172);
 	
+	// UTIL
+	var DateUtil = __webpack_require__(166);
+	
 	// COMPONENTS
 	var Month = __webpack_require__(193);
 	
@@ -26959,6 +26989,16 @@
 	    this.dateListener.remove();
 	  },
 	
+	  prevMonth: function (event) {
+	    event.preventDefault();
+	    DateUtil.changeMonth(-1);
+	  },
+	
+	  nextMonth: function () {
+	    event.preventDefault();
+	    DateUtil.changeMonth(1);
+	  },
+	
 	  updateDate: function () {
 	    this.setState({
 	      month: DateStore.viewedMonth(),
@@ -26970,7 +27010,20 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'calendar' },
-	      React.createElement(Month, { month: 'May', year: this.state.year })
+	      React.createElement(
+	        'div',
+	        { className: 'prevMonth', onClick: this.prevMonth },
+	        'prev'
+	      ),
+	      this.state.month,
+	      ', ',
+	      this.state.year,
+	      React.createElement(
+	        'div',
+	        { className: 'nextMonth', onClick: this.nextMonth },
+	        'next'
+	      ),
+	      React.createElement(Month, { month: this.state.month, year: this.state.year })
 	    );
 	  }
 	
@@ -26987,6 +27040,9 @@
 	// COMPONENTS
 	var Day = __webpack_require__(194);
 	
+	// STORES
+	var DateStore = __webpack_require__(172);
+	
 	// ASSETS
 	var MONTHS = __webpack_require__(191);
 	
@@ -27001,6 +27057,30 @@
 	    };
 	  },
 	
+	  componentDidMount: function () {
+	    this.dateListener = DateStore.addListener(this.updateView);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.dateListener.remove();
+	  },
+	
+	  updateView: function () {
+	    this.setState({
+	      month: DateStore.viewedMonth(),
+	      year: DateStore.viewedYear()
+	    });
+	  },
+	
+	  bufferDays: function () {
+	    var day = new Date(this.state.month + " 1 " + this.state.year).getDay();
+	    var bufferDays = [];
+	    for (var i = 0; i < day; i++) {
+	      bufferDays.push(React.createElement('div', { className: 'bufferDay', key: "bufferDay" + i }));
+	    }
+	    return bufferDays;
+	  },
+	
 	  getDays: function () {
 	    var days = Array.apply(null, Array(31)).map(function (_, i) {
 	      return i + 1;
@@ -27010,7 +27090,6 @@
 	    return days.map(function (dayNumber) {
 	      var date = new Date(month + " " + dayNumber + " " + year);
 	      if (MONTHS[date.getMonth()] === month) {
-	        console.log(dayNumber);
 	        return React.createElement(Day, { day: dayNumber, month: MONTHS[date.getMonth()], year: date.getFullYear(), key: dayNumber });
 	      }
 	    });
@@ -27020,6 +27099,7 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'month' },
+	      this.bufferDays(),
 	      this.getDays()
 	    );
 	  }
@@ -27033,8 +27113,14 @@
 
 	var React = __webpack_require__(1);
 	
+	// ASSETS
+	var DAYS = __webpack_require__(190);
+	
+	// STORES
+	var DateStore = __webpack_require__(172);
+	
 	var Day = React.createClass({
-	  displayName: "Day",
+	  displayName: 'Day',
 	
 	
 	  getInitialState: function () {
@@ -27045,13 +27131,29 @@
 	    };
 	  },
 	
+	  componentDidMount: function () {
+	    this.dateListener = DateStore.addListener(this.updateDate);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.dateListener.remove();
+	  },
+	
+	  updateDate: function () {
+	    this.setState({
+	      month: DateStore.viewedMonth(),
+	      year: DateStore.viewedYear()
+	    });
+	  },
+	
 	  render: function () {
+	    var date = new Date(this.state.month + " " + this.state.day + " " + this.state.year);
 	    return React.createElement(
-	      "div",
-	      { className: "day" },
-	      this.state.day,
-	      " ",
-	      this.state.month
+	      'div',
+	      { className: 'day' },
+	      DAYS[date.getDay()],
+	      ' ',
+	      this.state.day
 	    );
 	  }
 	

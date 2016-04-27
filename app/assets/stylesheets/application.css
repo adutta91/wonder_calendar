@@ -13,3 +13,29 @@
  *= require_tree .
  *= require_self
  */
+
+.day {
+  border: 1px solid black;
+  width: 100px;
+  height: 80px;
+  transition: 1s;
+}
+
+.day:hover {
+  background-color: #CECECE;
+  cursor: pointer;
+  transition: 1s;
+}
+
+.bufferDay {
+  border: 1px solid gray;
+  width: 100px;
+  height: 80px;
+  background-color: #F1F1F1;
+}
+
+.month {
+  display: flex;
+  flex-wrap: wrap;
+  width: 750px;
+}

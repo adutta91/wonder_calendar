@@ -6,6 +6,13 @@ var DateActions = {
       actionType: "SET_DATE",
       date: date
     });
+  },
+
+  changeViewedMonth: function(delta) {
+    Dispatcher.dispatch({
+      actionType: "SET_VIEW",
+      delta: delta
+    });
   }
 };
 
