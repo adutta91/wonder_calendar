@@ -6,6 +6,13 @@ var EventActions = {
       actionType: "ADD_EVENT",
       evnt: evnt
     });
+  },
+
+  editEvent: function(evnt) {
+    Dispatcher.dispatch({
+      actionType: "EDIT_EVENT",
+      evnt: evnt
+    });
   }
 };
 

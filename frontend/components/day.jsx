@@ -47,13 +47,18 @@ var Day = React.createClass({
   },
 
   getEvents: function() {
+    var that = this;
     if (this.state.events) {
-      return this.state.events.map(function(evnt, idx) {
+      return this.state.events.map(function(evnt) {
         return (<Event title={evnt.title}
                       description={evnt.description}
                       startTime={evnt.startTime}
                       endTime={evnt.endTime}
-                      key={idx}/>)
+                      day={that.state.day}
+                      month={that.state.month}
+                      year={that.state.year}
+                      key={evnt.id}
+                      id={evnt.id}/>)
       });
     } else {
       return (<div/>)

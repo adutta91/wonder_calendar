@@ -83,7 +83,11 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'app' },
-	      this.state.date,
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.date
+	      ),
 	      React.createElement(Calendar, null)
 	    );
 	  }
@@ -27010,11 +27014,7 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'calendar' },
-	      React.createElement(
-	        'span',
-	        { className: 'prevMonth', onClick: this.prevMonth },
-	        'prev'
-	      ),
+	      React.createElement('img', { src: '../assets/images/arrow_left.png', className: 'prevMonth', onClick: this.prevMonth }),
 	      this.state.month,
 	      ', ',
 	      this.state.year,
@@ -27162,13 +27162,18 @@
 	  },
 	
 	  getEvents: function () {
+	    var that = this;
 	    if (this.state.events) {
-	      return this.state.events.map(function (evnt, idx) {
+	      return this.state.events.map(function (evnt) {
 	        return React.createElement(Event, { title: evnt.title,
 	          description: evnt.description,
 	          startTime: evnt.startTime,
 	          endTime: evnt.endTime,
-	          key: idx });
+	          day: that.state.day,
+	          month: that.state.month,
+	          year: that.state.year,
+	          key: evnt.id,
+	          id: evnt.id });
 	      });
 	    } else {
 	      return React.createElement('div', null);
@@ -27963,6 +27968,10 @@
 	var EventUtil = {
 	  addEvent: function (evnt) {
 	    EventActions.addEvent(evnt);
+	  },
+	
+	  editEvent: function (evnt) {
+	    EventActions.editEvent(evnt);
 	  }
 	};
 	
@@ -27978,6 +27987,13 @@
 	  addEvent: function (evnt) {
 	    Dispatcher.dispatch({
 	      actionType: "ADD_EVENT",
+	      evnt: evnt
+	    });
+	  },
+	
+	  editEvent: function (evnt) {
+	    Dispatcher.dispatch({
+	      actionType: "EDIT_EVENT",
 	      evnt: evnt
 	    });
 	  }
@@ -28008,10 +28024,26 @@
 	  return _events[date];
 	};
 	
+	EventStore.getEventById = function (date, id) {
+	  var event = {};
+	  if (_events[date]) {
+	    _events[date].forEach(function (evnt) {
+	      if (evnt.id === id) {
+	        event = evnt;
+	      }
+	    });
+	  }
+	  return event;
+	};
+	
 	EventStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case "ADD_EVENT":
 	      addEvent(payload.evnt);
+	      EventStore.__emitChange();
+	      break;
+	    case "EDIT_EVENT":
+	      editEvent(payload.evnt);
 	      EventStore.__emitChange();
 	      break;
 	  }
@@ -28023,7 +28055,8 @@
 	    title: evnt.title,
 	    description: evnt.description,
 	    startTime: evnt.startTime,
-	    endTime: evnt.endTime
+	    endTime: evnt.endTime,
+	    id: _events[date] ? _events[date].length : 0
 	  };
 	  if (_events[date]) {
 	    _events[date].push(eventInfo);
@@ -28031,6 +28064,25 @@
 	    _events[date] = [eventInfo];
 	  }
 	  localStorage['wonderCalendarEvents'] = JSON.stringify(_events);
+	};
+	
+	var editEvent = function (evnt) {
+	  var date = evnt.month + " " + evnt.day + " " + evnt.year;
+	  var eventInfo = {
+	    title: evnt.title,
+	    description: evnt.description,
+	    startTime: evnt.startTime,
+	    endTime: evnt.endTime,
+	    id: evnt.id
+	  };
+	
+	  _events[date] = _events[date].map(function (event) {
+	    if (event.id === evnt.id) {
+	      return evnt;
+	    } else {
+	      return event;
+	    }
+	  });
 	};
 	
 	var conflictsWith = function (evnt1, evnt2) {
@@ -28055,6 +28107,9 @@
 	var Modal = __webpack_require__(204);
 	var EditEventModal = __webpack_require__(214);
 	
+	// STORES
+	var EventStore = __webpack_require__(212);
+	
 	var Event = React.createClass({
 	  displayName: 'Event',
 	
@@ -28064,8 +28119,35 @@
 	      title: this.props.title,
 	      description: this.props.description,
 	      startTime: this.props.startTime,
-	      endTime: this.props.endTime
+	      endTime: this.props.endTime,
+	      day: this.props.day,
+	      month: this.props.month,
+	      year: this.props.year,
+	      id: this.props.id
 	    };
+	  },
+	
+	  componentDidMount: function () {
+	    this.eventListener = EventStore.addListener(this.updateEvent);
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.eventListener.remove();
+	  },
+	
+	  updateEvent: function () {
+	    var date = this.state.month + " " + this.state.day + " " + this.state.year;
+	    var newEvent = EventStore.getEventById(date, this.state.id);
+	    this.setState({
+	      title: newEvent.title,
+	      description: newEvent.description,
+	      startTime: newEvent.startTime,
+	      endTime: newEvent.endTime,
+	      day: newEvent.day,
+	      month: newEvent.month,
+	      year: newEvent.year,
+	      id: newEvent.id
+	    });
 	  },
 	
 	  showModal: function (event) {
@@ -28078,6 +28160,7 @@
 	  },
 	
 	  render: function () {
+	
 	    return React.createElement(
 	      'div',
 	      { className: 'eventModule', onClick: this.showModal },
@@ -28089,7 +28172,15 @@
 	      React.createElement(
 	        Modal,
 	        { ref: 'modal' },
-	        React.createElement(EditEventModal, null),
+	        React.createElement(EditEventModal, { title: this.state.title,
+	          description: this.state.description,
+	          startTime: this.state.startTime,
+	          endTime: this.state.endTime,
+	          day: this.state.day,
+	          month: this.state.month,
+	          year: this.state.year,
+	          id: this.state.id,
+	          modalCallback: this.hideModal }),
 	        React.createElement(
 	          'button',
 	          { className: 'modalButton', onClick: this.hideModal },
@@ -28108,14 +28199,121 @@
 
 	var React = __webpack_require__(1);
 	
+	// UTIL
+	var EventUtil = __webpack_require__(210);
+	
 	var EditEventModal = React.createClass({
 	  displayName: 'EditEventModal',
+	
+	
+	  getInitialState: function () {
+	    return {
+	      title: this.props.title,
+	      description: this.props.description,
+	      startTime: this.props.startTime,
+	      endTime: this.props.endTime,
+	      day: this.props.day,
+	      month: this.props.month,
+	      year: this.props.year,
+	      id: this.props.id
+	    };
+	  },
+	
+	  updateTitle: function (event) {
+	    this.setState({ title: event.currentTarget.value });
+	  },
+	
+	  updateStartTime: function (event) {
+	    this.setState({ startTime: event.currentTarget.value });
+	  },
+	
+	  updateEndTime: function (event) {
+	    this.setState({ endTime: event.currentTarget.value });
+	  },
+	
+	  updateDescription: function (event) {
+	    this.setState({ description: event.currentTarget.value });
+	  },
+	
+	  editEvent: function (event) {
+	    EventUtil.editEvent({
+	      title: this.state.title,
+	      description: this.state.description,
+	      startTime: parseInt(this.state.startTime),
+	      endTime: parseInt(this.state.endTime),
+	      day: this.state.day,
+	      month: this.state.month,
+	      year: this.state.year,
+	      id: this.state.id
+	    });
+	    this.props.modalCallback();
+	  },
 	
 	  render: function () {
 	    return React.createElement(
 	      'div',
 	      null,
-	      'I am an edit event modal'
+	      React.createElement(
+	        'h2',
+	        null,
+	        this.state.month,
+	        ' ',
+	        this.state.day,
+	        ', ',
+	        this.state.year
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'title' },
+	          'Title: '
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'text',
+	          id: 'title',
+	          value: this.state.title,
+	          onChange: this.updateTitle }),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'startTime' },
+	          'Start: '
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'text',
+	          id: 'startTime',
+	          value: this.state.startTime,
+	          onChange: this.updateStartTime }),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'endTime' },
+	          'End: '
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'text',
+	          id: 'endTime',
+	          value: this.state.endTime,
+	          onChange: this.updateEndTime }),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          { htmlFor: 'description' },
+	          'Description: '
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('textarea', { id: 'description',
+	          value: this.state.description,
+	          onChange: this.updateDescription }),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'button',
+	          { onClick: this.editEvent },
+	          'Edit'
+	        )
+	      )
 	    );
 	  }
 	});

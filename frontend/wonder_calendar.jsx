@@ -34,7 +34,7 @@ var WonderApp = React.createClass({
   render: function() {
     return (
       <div className="app">
-        {this.state.date}
+        <div>{this.state.date}</div>
         <Calendar />
       </div>
     )
