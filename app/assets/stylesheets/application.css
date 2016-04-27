@@ -71,6 +71,20 @@
   transition: 1s;
 }
 
+.today {
+  border: 1px solid black;
+  width: 160px;
+  height: 120px;
+  transition: 1s;
+  background-color: #D5FFD5;
+}
+
+.today:hover {
+  background-color: #B6FDB6;
+  cursor: pointer;
+  transition: 1s;
+}
+
 .bufferDay {
   border: 1px solid gray;
   width: 160px;

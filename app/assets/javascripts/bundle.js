@@ -27165,6 +27165,7 @@
 	
 	// ASSETS
 	var DAYS = __webpack_require__(190);
+	var MONTHS = __webpack_require__(191);
 	
 	// STORES
 	var DateStore = __webpack_require__(172);
@@ -27241,11 +27242,20 @@
 	    this.refs.modal.hide();
 	  },
 	
+	  getClassname: function () {
+	    var currentDate = new Date(Date.now());
+	    if (currentDate.getDate() === this.state.day && MONTHS[currentDate.getMonth()] === this.state.month && currentDate.getFullYear() === this.state.year) {
+	      return "today";
+	    } else {
+	      return "day";
+	    }
+	  },
+	
 	  render: function () {
 	    var date = new Date(this.state.month + " " + this.state.day + " " + this.state.year);
 	    return React.createElement(
 	      'div',
-	      { className: 'day', onClick: this.showModal },
+	      { className: this.getClassname(), onClick: this.showModal },
 	      React.createElement(
 	        'div',
 	        { className: 'dayLabel' },

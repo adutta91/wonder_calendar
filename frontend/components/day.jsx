@@ -2,6 +2,7 @@ var React = require('react');
 
 // ASSETS
 var DAYS = require('../assets/days');
+var MONTHS = require('../assets/months');
 
 // STORES
 var DateStore = require('../stores/dateStore');
@@ -76,10 +77,19 @@ var Day = React.createClass({
     this.refs.modal.hide();
   },
 
+  getClassname: function() {
+    var currentDate = new Date(Date.now());
+    if ((currentDate.getDate() === this.state.day && MONTHS[currentDate.getMonth()] === this.state.month) && currentDate.getFullYear() === this.state.year) {
+      return "today"
+    } else {
+      return "day"
+    }
+  },
+
   render: function() {
     var date = new Date(this.state.month + " " + this.state.day + " " + this.state.year)
     return (
-      <div className="day" onClick={this.showModal}>
+      <div className={this.getClassname()} onClick={this.showModal}>
         <div className="dayLabel">{this.state.day}</div>
         <div className="eventContainer">
           {this.getEvents()}
